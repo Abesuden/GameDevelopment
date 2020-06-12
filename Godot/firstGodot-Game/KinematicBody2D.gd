@@ -1,29 +1,26 @@
 extends KinematicBody2D
 
 # GLOBAL VARIABLES
-var motion = Vector2() # direction and velocity
-export var movement_speed = 250 # exports variable to inspector
-var mov_x = movement_speed
-var mov_y = movement_speed
+export var acceleration = 1000
+export var max_speed = 10000
+export var friction = 1000
+
+var velocity = Vector2.ZERO
 
 # PLAYER MOVEMENT
 func _physics_process(delta):
+
+	# GET VELOCITY
+	var input_vector = Vector2.ZERO
+	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+	input_vector = input_vector.normalized()
 	
-	# LEFT ARROW
-	if Input.is_action_pressed("ui_left"):
-		motion.x = -mov_x
-	elif Input.is_action_pressed("ui_right"):
-		motion.x = mov_x
+	if input_vector != Vector2.ZERO:
+		velocity += input_vector * acceleration * delta
+		velocity = velocity.clamped(max_speed * delta)
 	else:
-		motion.x = 0
-		
-	# RIGHT ARROW
-	if Input.is_action_pressed('ui_up'):
-		motion.y = -mov_y
-	elif Input.is_action_pressed('ui_down'):
-		motion.y = mov_y
-	else:
-		motion.y = 0
+		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	
 	# ACTION
-	move_and_slide(motion)
+	move_and_slide(velocity)
