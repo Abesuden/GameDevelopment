@@ -3,7 +3,7 @@ extends KinematicBody2D
 # GLOBAL VARIABLES
 export var acceleration = 1200
 export var max_speed = 400
-export var friction = 1200
+export var friction = 2400
 export var prioritize_X_axis = true
 var vertical_priority = 1
 
@@ -19,6 +19,7 @@ func _ready():
 		vertical_priority = 0.9
 	else:
 		vertical_priority = 1.1
+	animationTree.active = true
 
 # PLAYER MOVEMENT AND ANIMATION
 func _physics_process(delta):
@@ -39,4 +40,4 @@ func _physics_process(delta):
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	
 	# ACTION
-	move_and_slide(velocity)
+	velocity = move_and_slide(velocity)
